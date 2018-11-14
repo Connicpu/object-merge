@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "object-merge",
+    "derive-object-merge",
+    "test-object-merge"
+]

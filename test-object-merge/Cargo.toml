@@ -1,0 +1,9 @@
+[package]
+name = "test-object-merge"
+version = "0.1.0"
+authors = ["Connie Hilarides <conni_h@outlook.com>"]
+edition = "2015"
+
+[dependencies]
+object-merge = { path = "../object-merge" }
+derive-object-merge = { path = "../derive-object-merge" }
