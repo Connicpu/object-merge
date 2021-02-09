@@ -14,6 +14,16 @@ pub trait ShallowMerge {
     fn shallow_merge(&mut self, template: &Self);
 }
 
+/// Similar to ShallowMerge, but overwrites existing value in the case where lhs and rhs are defined
+pub trait ShallowOverwrite {
+    fn shallow_overwrite(&mut self, template: &Self);
+}
+
+/// Always takes RHS
+pub trait Overwrite {
+    fn overwrite(&mut self, template: &Self);
+}
+
 /// Combine two containers by combining all of their elements. This does not deduplicate
 /// anything for types which support multiple values of the same key.
 pub trait Combine {
