@@ -26,7 +26,7 @@ impl<'a> ObjectMember<'a> {
         let ty = self.ty;
 
         match &self.action {
-            Ignore => quote!{},
+            Ignore => quote! {},
             Merge => quote! {
                 <#ty as object_merge::Merge>::merge(
                     &mut self.#field,
@@ -35,6 +35,18 @@ impl<'a> ObjectMember<'a> {
             },
             ShallowMerge => quote! {
                 <#ty as object_merge::ShallowMerge>::shallow_merge(
+                    &mut self.#field,
+                    &template.#field,
+                );
+            },
+            ShallowOverwrite => quote! {
+                <#ty as object_merge::ShallowOverwrite>::shallow_overwrite(
+                    &mut self.#field,
+                    &template.#field,
+                );
+            },
+            Overwrite => quote! {
+                <#ty as object_merge::Overwrite>::overwrite(
                     &mut self.#field,
                     &template.#field,
                 );

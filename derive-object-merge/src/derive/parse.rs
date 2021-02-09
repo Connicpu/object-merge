@@ -1,4 +1,4 @@
-use derive::tree::{ObjectMember, ObjectMerge, MemberAction};
+use derive::tree::{MemberAction, ObjectMember, ObjectMerge};
 
 use proc_macro2::Span;
 use syn::spanned::Spanned;
@@ -90,6 +90,10 @@ impl MemberAction {
                 return Ok(MemberAction::Merge);
             } else if attr_id == "shallow_merge" {
                 return Ok(MemberAction::ShallowMerge);
+            } else if attr_id == "shallow_overwrite" {
+                return Ok(MemberAction::ShallowOverwrite);
+            } else if attr_id == "overwrite" {
+                return Ok(MemberAction::Overwrite);
             } else if attr_id == "combine" {
                 return Ok(MemberAction::Combine);
             } else if attr_id == "merge_combine" {
@@ -171,6 +175,8 @@ impl MemberAction {
             MemberAction::Ignore => return None,
             MemberAction::Merge => quote! { object_merge::Merge },
             MemberAction::ShallowMerge => quote! { object_merge::ShallowMerge },
+            MemberAction::ShallowOverwrite => quote! { object_merge::ShallowOverwrite },
+            MemberAction::Overwrite => quote! { object_merge::Overwrite },
             MemberAction::Combine => quote! { object_merge::Combine },
             MemberAction::MergeCombine => quote! { object_merge::MergeCombine },
             MemberAction::MergeByKey(_) => quote! { object_merge::MergeByKey },
