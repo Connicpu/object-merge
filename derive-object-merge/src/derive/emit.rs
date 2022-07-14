@@ -1,4 +1,4 @@
-use derive::tree::{ObjectMember, ObjectMerge};
+use crate::derive::tree::{ObjectMember, ObjectMerge};
 
 use proc_macro2::TokenStream;
 
@@ -20,7 +20,7 @@ impl<'a> ObjectMerge<'a> {
 
 impl<'a> ObjectMember<'a> {
     pub fn emit_merge(&self) -> TokenStream {
-        use derive::tree::MemberAction::*;
+        use crate::derive::tree::MemberAction::*;
 
         let field = &self.member;
         let ty = self.ty;

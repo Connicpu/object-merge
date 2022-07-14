@@ -1,3 +1,4 @@
+mod array;
 mod btree;
 mod generic;
 mod hash;

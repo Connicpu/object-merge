@@ -1,4 +1,4 @@
-use derive::tree::{MemberAction, ObjectMember, ObjectMerge};
+use crate::derive::tree::{MemberAction, ObjectMember, ObjectMerge};
 
 use proc_macro2::Span;
 use syn::spanned::Spanned;
@@ -121,31 +121,37 @@ impl MemberAction {
 
             let member = match &list.nested[0] {
                 NestedMeta::Meta(Meta::List(inner)) => {
-                    if inner.ident != "member" || inner.nested.len() != 1 {
+                    if !inner.path.is_ident("member") || inner.nested.len() != 1 {
                         return Err(format!("Invalid syntax for #[{}]", attr_id));
                     }
 
                     match &inner.nested[0] {
-                        NestedMeta::Meta(Meta::Word(member)) => Member::Named(member.clone()),
-                        NestedMeta::Literal(Lit::Str(lit)) => {
+                        NestedMeta::Meta(Meta::Path(path)) => {
+                            Member::Named(path.get_ident().unwrap().clone())
+                        }
+                        NestedMeta::Lit(Lit::Str(lit)) => {
                             Member::Named(Ident::new(&lit.value(), lit.span()))
                         }
-                        NestedMeta::Literal(Lit::Int(lit)) => Member::Unnamed(Index {
-                            index: lit.value() as u32,
+                        NestedMeta::Lit(Lit::Int(lit)) => Member::Unnamed(Index {
+                            index: lit
+                                .base10_parse::<u32>()
+                                .map_err(|e| format!("Invalid literal {}", e))?,
                             span: lit.span(),
                         }),
                         _ => return Err(format!("Invalid syntax for #[{}]", attr_id)),
                     }
                 }
                 NestedMeta::Meta(Meta::NameValue(inner)) => {
-                    if inner.ident != "member" {
+                    if !inner.path.is_ident("member") {
                         return Err(format!("Invalid syntax for #[{}]", attr_id));
                     }
 
                     match &inner.lit {
                         Lit::Str(lit) => Member::Named(Ident::new(&lit.value(), lit.span())),
                         Lit::Int(lit) => Member::Unnamed(Index {
-                            index: lit.value() as u32,
+                            index: lit
+                                .base10_parse::<u32>()
+                                .map_err(|e| format!("Invalid literal {}", e))?,
                             span: lit.span(),
                         }),
                         _ => return Err(format!("Invalid syntax for #[{}]", attr_id)),

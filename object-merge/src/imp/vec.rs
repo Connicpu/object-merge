@@ -14,7 +14,7 @@ where
 
 fn merge_combine<'a, T, F, K>(
     this: &mut Vec<T>,
-    template: &'a Vec<T>,
+    template: &'a [T],
     mut get_key: F,
 ) -> HashMap<K, &'a T>
 where
@@ -32,7 +32,7 @@ where
                 None => continue,
             }
         };
-        item.merge(&template);
+        item.merge(template);
     }
 
     template
