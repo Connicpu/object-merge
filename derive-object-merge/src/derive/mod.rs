@@ -1,7 +1,7 @@
-use derive::tree::ObjectMerge;
+use crate::derive::tree::ObjectMerge;
 
 use proc_macro2::TokenStream;
-use syn::{DeriveInput, Data};
+use syn::{Data, DeriveInput};
 
 pub mod emit;
 pub mod parse;

@@ -1,5 +1,6 @@
 use crate::{
     Combine, CombineByKey, Merge, MergeByKey, MergeCombine, MergeCombineByKey, ShallowMerge,
+    ShallowOverwrite,
 };
 
 use std::hash::Hash;
@@ -30,6 +31,15 @@ where
 {
     fn shallow_merge(&mut self, template: &Self) {
         merge_with(self, template, |_, _| ());
+    }
+}
+
+impl<T> ShallowOverwrite for Option<T>
+where
+    T: Clone,
+{
+    fn shallow_overwrite(&mut self, template: &Self) {
+        merge_with(self, template, |lhs, rhs| *lhs = rhs.clone());
     }
 }
 

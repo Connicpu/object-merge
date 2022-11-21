@@ -1,5 +1,5 @@
-use syn::{Generics, Ident, Type};
 use proc_macro2::TokenStream;
+use syn::{Generics, Ident, Type};
 
 pub struct ObjectMerge<'a> {
     pub name: &'a Ident,
@@ -17,6 +17,8 @@ pub enum MemberAction {
     Ignore,
     Merge,
     ShallowMerge,
+    ShallowOverwrite,
+    Overwrite,
     Combine,
     MergeCombine,
     MergeByKey(TokenStream),

@@ -2,7 +2,7 @@
 name = "derive-object-merge"
 version = "0.1.0-alpha1"
 authors = ["Connie Hilarides <conni_h@outlook.com>"]
-edition = "2015"
+edition = "2021"
 license = "MIT"
 repository = "https://github.com/Connicpu/object-merge"
 documentation = "https://docs.rs/object-merge"
@@ -14,9 +14,9 @@ Automatically implement traits useful for recursively merging document-like obje
 proc-macro = true
 
 [dependencies]
-syn = { version = "0.15.18", features = ["derive"] }
-quote = { version = "0.6.10", features = ["proc-macro"] }
-proc-macro2 = "0.4.20"
+syn = { version = "1.0.98", features = ["derive"] }
+quote = { version = "1.0.20", features = ["proc-macro"] }
+proc-macro2 = "1.0.40"
 
 [package.metadata.docs.rs]
 default-target = "x86_64-pc-windows-msvc"

@@ -1,4 +1,4 @@
-use derive::tree::{ObjectMember, ObjectMerge, MemberAction};
+use crate::derive::tree::{MemberAction, ObjectMember, ObjectMerge};
 
 use proc_macro2::Span;
 use syn::spanned::Spanned;
@@ -90,6 +90,10 @@ impl MemberAction {
                 return Ok(MemberAction::Merge);
             } else if attr_id == "shallow_merge" {
                 return Ok(MemberAction::ShallowMerge);
+            } else if attr_id == "shallow_overwrite" {
+                return Ok(MemberAction::ShallowOverwrite);
+            } else if attr_id == "overwrite" {
+                return Ok(MemberAction::Overwrite);
             } else if attr_id == "combine" {
                 return Ok(MemberAction::Combine);
             } else if attr_id == "merge_combine" {
@@ -117,31 +121,37 @@ impl MemberAction {
 
             let member = match &list.nested[0] {
                 NestedMeta::Meta(Meta::List(inner)) => {
-                    if inner.ident != "member" || inner.nested.len() != 1 {
+                    if !inner.path.is_ident("member") || inner.nested.len() != 1 {
                         return Err(format!("Invalid syntax for #[{}]", attr_id));
                     }
 
                     match &inner.nested[0] {
-                        NestedMeta::Meta(Meta::Word(member)) => Member::Named(member.clone()),
-                        NestedMeta::Literal(Lit::Str(lit)) => {
+                        NestedMeta::Meta(Meta::Path(path)) => {
+                            Member::Named(path.get_ident().unwrap().clone())
+                        }
+                        NestedMeta::Lit(Lit::Str(lit)) => {
                             Member::Named(Ident::new(&lit.value(), lit.span()))
                         }
-                        NestedMeta::Literal(Lit::Int(lit)) => Member::Unnamed(Index {
-                            index: lit.value() as u32,
+                        NestedMeta::Lit(Lit::Int(lit)) => Member::Unnamed(Index {
+                            index: lit
+                                .base10_parse::<u32>()
+                                .map_err(|e| format!("Invalid literal {}", e))?,
                             span: lit.span(),
                         }),
                         _ => return Err(format!("Invalid syntax for #[{}]", attr_id)),
                     }
                 }
                 NestedMeta::Meta(Meta::NameValue(inner)) => {
-                    if inner.ident != "member" {
+                    if !inner.path.is_ident("member") {
                         return Err(format!("Invalid syntax for #[{}]", attr_id));
                     }
 
                     match &inner.lit {
                         Lit::Str(lit) => Member::Named(Ident::new(&lit.value(), lit.span())),
                         Lit::Int(lit) => Member::Unnamed(Index {
-                            index: lit.value() as u32,
+                            index: lit
+                                .base10_parse::<u32>()
+                                .map_err(|e| format!("Invalid literal {}", e))?,
                             span: lit.span(),
                         }),
                         _ => return Err(format!("Invalid syntax for #[{}]", attr_id)),
@@ -171,6 +181,8 @@ impl MemberAction {
             MemberAction::Ignore => return None,
             MemberAction::Merge => quote! { object_merge::Merge },
             MemberAction::ShallowMerge => quote! { object_merge::ShallowMerge },
+            MemberAction::ShallowOverwrite => quote! { object_merge::ShallowOverwrite },
+            MemberAction::Overwrite => quote! { object_merge::Overwrite },
             MemberAction::Combine => quote! { object_merge::Combine },
             MemberAction::MergeCombine => quote! { object_merge::MergeCombine },
             MemberAction::MergeByKey(_) => quote! { object_merge::MergeByKey },

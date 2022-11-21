@@ -1,7 +1,11 @@
 [package]
 name = "object-merge"
 version = "0.1.0-alpha1"
-authors = ["Connie Hilarides <conni_h@outlook.com>"]
+edition = "2021"
+authors = [
+    "Connie Hilarides <conni_h@outlook.com>",
+    "oliver.bunting@etlsystems.com"
+    ]
 license = "MIT"
 repository = "https://github.com/Connicpu/object-merge"
 documentation = "https://docs.rs/object-merge"

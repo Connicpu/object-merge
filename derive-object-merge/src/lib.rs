@@ -16,6 +16,8 @@ mod derive;
     attributes(
         ignore,
         shallow_merge,
+        shallow_overwrite,
+        overwrite,
         merge,
         combine,
         merge_combine,
